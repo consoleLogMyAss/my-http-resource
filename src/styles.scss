@@ -1,1 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+body,
+html {
+  padding: 0;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background-color: #f0ecec;
+}
+
+app-root {
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+  margin: 0 5px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  color: #4d2e23;
+  font-weight: 600;
+
+  &.create {
+    background-color: #ffd044;
+    border: 1px solid #dba606;
+  }
+
+  &.destroy {
+    background-color: #ff6b6b;
+    border: 1px solid #e74c3c;
+  }
+}
+

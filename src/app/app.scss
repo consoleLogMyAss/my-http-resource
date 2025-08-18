@@ -1,0 +1,45 @@
+.error {
+  font-size: 45px;
+  color: tomato;
+  margin: 0;
+  text-align: center;
+}
+
+.button-block {
+  margin-top: 16px;
+}
+
+.username, .loading {
+  color: #333;
+  font-size: 45px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.loading {
+  color: #a8a8a8;
+}
+
+button {
+  border: 1px solid #a8a8a8;
+}
+
+button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+  background: lightgray;
+}
+
+.post {
+  width: 500px;
+  margin-bottom: 16px;
+  padding: 8px;
+  border: 1px solid #a8a8a8;
+  border-radius: 4px;
+
+  .email {
+    font-weight: 700;
+    color: #5a5858;
+    margin-bottom: 8px;
+  }
+}
