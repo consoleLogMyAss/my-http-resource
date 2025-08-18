@@ -34,6 +34,8 @@ export class App {
   }
 
   protected putPostHandler(): void {
-    this.appService.putPostHandler.fetch();
+    this.appService.putPostHandler.fetch({
+      body: testPost
+    });
   }
 }

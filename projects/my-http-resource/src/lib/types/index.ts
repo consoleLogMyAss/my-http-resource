@@ -18,6 +18,7 @@ export type TOptionsData = {
 export type TFetchData = {
   queryParams?: TQueryParams,
   urlParams?: TUrlParams,
+  body?: object;
 }
 
 export type TResult<U> = {
