@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IHttpResource, myHttpResource } from 'my-http-resource';
+import {IHttpResource, myHttpResource, Get, Post, Put} from 'my-http-resource';
 import { delay, pipe } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IPost } from '../app';
@@ -16,7 +16,7 @@ export const testPost = {
   providedIn: 'root'
 })
 export class AppService {
-  public posts: IHttpResource<IPost[]> = myHttpResource().get<IPost[]>({
+  public posts: IHttpResource<Get> = myHttpResource().get<IPost[]>({
     url:'https://jsonplaceholder.typicode.com/posts/{{postId}}/comments',
     pipe: pipe(delay(1000)),
     afterSuccess: (data: IPost[]) => this.afterSuccess(data),
@@ -40,7 +40,7 @@ export class AppService {
     console.log(error);
   }
 
-  public sendPost: IHttpResource = myHttpResource().post({
+  public sendPost: IHttpResource<Post> = myHttpResource().post({
     url:'https://jsonplaceholder.typicode.com/posts',
     manual: true,
     pipe: pipe(delay(1000)),
@@ -52,7 +52,7 @@ export class AppService {
     this.posts.value.update((v: IPost[]) => [...v, data])
   }
 
-  public putPostHandler: IHttpResource = myHttpResource().put({
+  public putPostHandler: IHttpResource<Put> = myHttpResource().put({
     url:'https://jsonplaceholder.typicode.com/posts/{{postId}}',
     urlParams: { postId: 1 },
     manual: true,

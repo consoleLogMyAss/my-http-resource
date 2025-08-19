@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { IGetOrDeleteData, IHttpResource, IPostOrPutOrPatchData, IRequest } from '../interfaces';
 import { ReactiveHttpModel} from '../model/reactive.http.model';
 import {
+  Delete,
+  Get, Patch, Post, Put,
   TFetchData,
   TMethod,
   TMethodFnGetOrDelete,
@@ -64,30 +66,30 @@ export class MyHttpService {
     return data.pipe ? baseRequest.pipe(data.pipe) : baseRequest;
   }
 
-  public get<T>(data: IGetOrDeleteData<T>): IHttpResource<T> {
-    return this.createResource<T, IGetOrDeleteData<T>>(data, 'get');
+  public get<T = any>(data: IGetOrDeleteData<T>): IHttpResource<Get> {
+    return this.createResource<T, IGetOrDeleteData<T>, Get>(data, 'get');
   }
 
-  public post<T>(data: IPostOrPutOrPatchData<T>): IHttpResource<T> {
-    return this.createResource<T, IPostOrPutOrPatchData<T>>(data, 'post');
+  public post<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Post> {
+    return this.createResource<T, IPostOrPutOrPatchData<T>, Post>(data, 'post');
   }
 
-  public patch<T>(data: IPostOrPutOrPatchData<T>): IHttpResource<T> {
-    return this.createResource<T, IPostOrPutOrPatchData<T>>(data, 'patch');
+  public patch<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Patch> {
+    return this.createResource<T, IPostOrPutOrPatchData<T>, Patch>(data, 'patch');
   }
 
-  public put<T>(data: IPostOrPutOrPatchData<T>): IHttpResource<T> {
-    return this.createResource<T, IPostOrPutOrPatchData<T>>(data, 'put');
+  public put<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Put> {
+    return this.createResource<T, IPostOrPutOrPatchData<T>, Put>(data, 'put');
   }
 
-  public delete<T>(data: IGetOrDeleteData<T>): IHttpResource<T> {
-    return this.createResource<T, IGetOrDeleteData<T>>(data, 'delete');
+  public delete<T = any>(data: IGetOrDeleteData<T>): IHttpResource<Delete> {
+    return this.createResource<T, IGetOrDeleteData<T>, Delete>(data, 'delete');
   }
 
-  private createResource<T, Req extends IRequest<T>>(
+  private createResource<T, Req extends IRequest<T>, Method extends Get | Patch | Put | Post | Delete>(
     data: Req,
     method: TMethod,
-  ): IHttpResource<T> {
+  ): IHttpResource<Method> {
     const reactiveData: ReactiveHttpModel<T> = new ReactiveHttpModel(data.initialValue);
     const getAfterActions: TResult<T> = this.getAfterActions(reactiveData, data);
 
@@ -100,10 +102,10 @@ export class MyHttpService {
       value: reactiveData.value,
       error: reactiveData.error,
       loading: reactiveData.loading.asReadonly(),
-      request$: (fetchData: TFetchData = {}) => {
+      request$: (fetchData: Method) => {
         return this.getHttp(method, {...data, ...fetchData})
       } ,
-      fetch: (fetchData: TFetchData = {}) => {
+      fetch: (fetchData: Method) => {
         reactiveData.loading.set(true);
 
         this.getHttp(method, {

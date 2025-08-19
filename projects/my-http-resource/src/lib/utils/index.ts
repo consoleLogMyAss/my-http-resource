@@ -1,5 +1,5 @@
 import { MyHttpService } from '../services/my.http.service';
 
-export function myHttpResource() {
+export function myHttpResource(): MyHttpService {
   return new MyHttpService();
 }

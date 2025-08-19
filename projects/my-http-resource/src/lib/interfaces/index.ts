@@ -1,14 +1,14 @@
 import { Signal, WritableSignal } from '@angular/core';
 import { Observable, UnaryFunction } from 'rxjs';
-import { TFetchData, TQueryParams, TUrlParams } from '../types';
+import { TQueryParams, TUrlParams } from '../types';
 import { HttpErrorResponse } from '@angular/common/http';
 
-export interface IHttpResource<T = any> {
+export interface IHttpResource<Method> {
   loading: Signal<boolean>,
-  value: WritableSignal<T>,
+  value: WritableSignal<any>,
   error: WritableSignal<unknown>,
-  fetch: (fetData?: TFetchData) => void,
-  request$: () => Observable<T>,
+  fetch: (fetData?: Method) => void,
+  request$: (fetData?: Method) => Observable<any>,
 }
 
 export interface IBaseRequestData<T> {

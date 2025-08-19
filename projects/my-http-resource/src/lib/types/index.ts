@@ -16,10 +16,28 @@ export type TOptionsData = {
 }
 
 export type TFetchData = {
-  queryParams?: TQueryParams,
   urlParams?: TUrlParams,
-  body?: object;
 }
+
+export type Get = {
+  queryParams?: TQueryParams,
+} & TFetchData;
+
+export type Delete = {
+  queryParams?: TQueryParams,
+} & TFetchData;
+
+export type Post = {
+  body?: object;
+} & TFetchData;
+
+export type Patch = {
+  body?: object;
+} & TFetchData;
+
+export type Put = {
+  body?: object;
+} & TFetchData;
 
 export type TResult<U> = {
   next: (result: U) => void;
