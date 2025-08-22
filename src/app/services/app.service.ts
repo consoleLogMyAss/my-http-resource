@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {IHttpResource, myHttpResource, Get, Post, Put} from 'my-http-resource';
+import {IHttpResource, myHttpResource, Get, Post, Put, Patch, Delete} from 'my-http-resource';
 import { delay, pipe } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IPost } from '../app';
@@ -31,12 +31,10 @@ export class AppService {
   });
 
   private afterSuccess(data: IPost[]) {
-    console.log('%cЭтот запрос закончился благополучно', 'font-size: 25px; color: green')
     console.log(data);
   }
 
   private afterError(error: HttpErrorResponse) {
-    console.log('%cЭтот запрос закончился с ошибкой', 'font-size: 25px; color: red')
     console.log(error);
   }
 
@@ -52,7 +50,7 @@ export class AppService {
     this.posts.value.update((v: IPost[]) => [...v, data])
   }
 
-  public putPostHandler: IHttpResource<Put> = myHttpResource().put({
+  public updatePost: IHttpResource<Put> = myHttpResource().put({
     url:'https://jsonplaceholder.typicode.com/posts/{{postId}}',
     urlParams: { postId: 1 },
     manual: true,
@@ -60,6 +58,28 @@ export class AppService {
   })
 
   private afterPutPostHandler(data: IPost) {
+    console.log(data)
+  }
+
+  public patchPost: IHttpResource<Patch> = myHttpResource().patch({
+    url:'https://jsonplaceholder.typicode.com/posts/{{postId}}',
+    urlParams: { postId: 1 },
+    manual: true,
+    afterSuccess: (data: IPost) => this.afterPatchPostHandler(data),
+  })
+
+  private afterPatchPostHandler(data: IPost) {
+    console.log(data)
+  }
+
+  public deletePost: IHttpResource<Delete> = myHttpResource().delete({
+    url:'https://jsonplaceholder.typicode.com/posts/{{postId}}',
+    urlParams: { postId: 1 },
+    manual: true,
+    afterSuccess: (data: IPost) => this.afterDeletePostHandler(data),
+  })
+
+  private afterDeletePostHandler(data: IPost) {
     console.log(data)
   }
 }

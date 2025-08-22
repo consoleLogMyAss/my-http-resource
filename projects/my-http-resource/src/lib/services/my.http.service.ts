@@ -13,7 +13,7 @@ import {
   TMethodFnPostOrPatchOrPut,
   TOptionsData,
   TResult,
-  TUrlParams
+  TUrlParams, TypeMethod
 } from '../types';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ParamsModel } from '../model/params.model';
@@ -86,7 +86,7 @@ export class MyHttpService {
     return this.createResource<T, IGetOrDeleteData<T>, Delete>(data, 'delete');
   }
 
-  private createResource<T, Req extends IRequest<T>, Method extends Get | Patch | Put | Post | Delete>(
+  private createResource<T, Req extends IRequest<T>, Method extends TypeMethod>(
     data: Req,
     method: TMethod,
   ): IHttpResource<Method> {

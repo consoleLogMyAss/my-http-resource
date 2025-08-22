@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import {AppService, testPost} from './services/app.service';
 import {JsonPipe} from '@angular/common';
+import {forkJoin} from 'rxjs';
 
 export interface IPost {
   postId: number;
@@ -34,8 +35,29 @@ export class App {
   }
 
   protected putPostHandler(): void {
-    this.appService.putPostHandler.fetch({
+    this.appService.updatePost.fetch({
       body: testPost
     });
+  }
+
+  protected patchPostHandler(): void {
+    this.appService.patchPost.fetch({
+      body: testPost
+    })
+  }
+
+  protected deletePostHandler() {
+    this.appService.deletePost.fetch();
+  }
+
+  protected requestObservable(): void {
+    forkJoin({
+      one: this.appService.posts.request$({
+        urlParams: { postId: 5 }
+      }),
+      two: this.appService.sendPost.request$()
+    }).subscribe((res: { one: IPost[], two: IPost }) => {
+      this.appService.posts.value.set(res.one)
+    })
   }
 }
