@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import {AppService, testPost} from './services/app.service';
-import {JsonPipe} from '@angular/common';
 import {forkJoin} from 'rxjs';
 
 export interface IPost {

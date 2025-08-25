@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {IHttpResource, myHttpResource, Get, Post, Put, Patch, Delete} from 'my-http-resource';
-import { delay, pipe } from 'rxjs';
+import { IHttpResource, myHttpResource, Get, Post, Put, Patch, Delete} from 'my-http-resource';
+import {delay, map, pipe} from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IPost } from '../app';
 
@@ -18,7 +18,12 @@ export const testPost = {
 export class AppService {
   public posts: IHttpResource<Get> = myHttpResource().get<IPost[]>({
     url:'https://jsonplaceholder.typicode.com/posts/{{postId}}/comments',
-    pipe: pipe(delay(1000)),
+    pipe: pipe(
+      delay(1000),
+      map((data: IPost[] ) => {
+        return data.map((item: IPost) => ({...item, email: 'test@mail.com' }));
+      })
+    ),
     afterSuccess: (data: IPost[]) => this.afterSuccess(data),
     afterError: (error: HttpErrorResponse) => this.afterError(error),
     urlParams: { postId: 2 },

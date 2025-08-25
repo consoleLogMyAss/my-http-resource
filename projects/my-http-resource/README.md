@@ -1,63 +1,403 @@
 # MyHttpResource
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.0.
+#### `MyHttpResource` is a wrapper around Angular’s `HttpClient` that provides a **reactive approach to working with HTTP requests**.
+#### It automatically manages states (`loading`, `error`, `value`), processes URL parameters, and allows easy configuration of post-request handling.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 💡 Installation and Concept
 
-```bash
-ng generate component component-name
+- You create a “resource” once (e.g., posts, sendPost, updatePost, etc.) with all its settings.
+- A resource always includes:
+  * `loading: Signal<boolean>`
+  * `value: WritableSignal<T>`
+  * `error: WritableSignal<unknown>`
+  * `fetch(fetchData?)` — executes the request immediately and updates signals.
+  * `request$(fetchData?)` — returns an `Observable<T>` without side effects.
+
+If `manual: false` (default), the request is executed immediately when the resource is created. If `manual: true`, it only runs when you call `fetch()` or `request$()`.
+
+To install, run `npm install my-http-resource` or `yarn add my-http-resource` and import the required entities into your application:
+```ts
+import { IHttpResource, myHttpResource, Get, Post, Put, Patch, Delete } from 'my-http-resource';
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
+## 📚 Usage examples
+
+### 1. GET request
+
+```ts
+public getRequestData: IHttpResource<Get> = myHttpResource().get<TData>({
+  url:'your_url',
+  pipe: pipe(delay(1000)),
+  afterSuccess: (data) => this.afterSuccess(data),
+  afterError: (error: HttpErrorResponse) => this.afterError(error),
+  urlParams: { postId: 2 },
+  headers: {
+    testHeader: '12345'
+  },
+  queryParams: { currency: 'USD' },
+  manual: true,
+  initialValue: []
+});
 ```
 
-## Building
+### 2. POST request
 
-To build the library, run:
-
-```bash
-ng build my-http-resource
+```ts
+public postRequestData: IHttpResource<Post> = myHttpResource().post<TData>({
+  url:'your_url/{{myId}}',
+  manual: true,
+  body: testPost,  
+  pipe: pipe(delay(1000)),
+  afterSuccess: (data) => this.afterSuccess(data),
+  afterError: (error: HttpErrorResponse) => this.afterError(error),
+  urlParams: { myId: 2 },
+  headers: {
+    testHeader: '12345'
+  },
+  manual: true,
+  initialValue: []
+})
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+### 3. PUT request
 
-### Publishing the Library
+```ts
+public putRequestData: IHttpResource<Put> = myHttpResource().put<TData>({
+  url:'your_url/{{myId}}',
+  manual: true,
+  body: testPost,  
+  pipe: pipe(delay(1000)),
+  afterSuccess: (data) => this.afterSuccess(data),
+  afterError: (error: HttpErrorResponse) => this.afterError(error),
+  urlParams: { myId: 2 },
+  headers: {
+    testHeader: '12345'
+  },
+  manual: true,
+  initialValue: []
+})
+```
+### 4. PATCH request
 
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/my-http-resource
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```ts
+public patchRequestData: IHttpResource<Patch> = myHttpResource().patch<TData>({
+  url:'your_url/{{myId}}',
+  manual: true,
+  body: testPost,  
+  pipe: pipe(delay(1000)),
+  afterSuccess: (data) => this.afterSuccess(data),
+  afterError: (error: HttpErrorResponse) => this.afterError(error),
+  urlParams: { myId: 2 },
+  headers: {
+    testHeader: '12345'
+  },
+  manual: true,
+  initialValue: []
+})
 ```
 
-## Running end-to-end tests
+### 5. DELETE request
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```ts
+public deleteRequestData: IHttpResource<Delete> = myHttpResource().delete<TData>({
+  url:'your_url/{{myId}}',
+  pipe: pipe(delay(1000)),
+  afterSuccess: (data) => this.afterSuccess(data),
+  afterError: (error: HttpErrorResponse) => this.afterError(error),
+  urlParams: { postId: 2 },
+  headers: {
+    testHeader: '12345'
+  },
+  queryParams: { currency: 'USD' },
+  manual: true,
+  initialValue: []
+});
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 🚀 Quick Start (Minimal Example)
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```ts
+// app.service.ts
+import { Injectable, inject } from '@angular/core';
+import { 
+  IHttpResource, 
+  myHttpResource, 
+  Get, 
+  Post, 
+  Put, 
+  Patch, 
+  Delete
+} from 'my-http-resource';
+
+export interface IPost {
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
+}
+
+@Injectable()
+export class AppService {
+  // GET: /posts/{{postId}}?limit=...
+  public posts: IHttpResource<Get> = myHttpResource().get<IPost[]>({
+    url: '/api/posts/{{postId}}',
+    urlParams: { postId: 1 },
+    queryParams: { limit: 10 },
+    initialValue: [],           // What to populate value with before the response.
+    afterSuccess: (data) => console.log('got posts', data),
+    afterError: (e) => console.warn('get error', e),
+    // manual: true,             // If you need to disable auto-start.
+  });
+
+  // POST: /posts
+  public sendPost: IHttpResource<Post> = myHttpResource().post<IPost>({
+    url: '/api/posts',
+    body: { name: 'John', email: 'john@mail.com', body: 'Hello' },
+    headers: { 'X-Trace-Id': 'abc-123' },
+    manual: true,               // Send manually via fetch().
+  });
+
+  // PUT: /posts/{{id}}
+  public updatePost: IHttpResource<Put> = myHttpResource().put<IPost>({
+    url: '/api/posts/{{id}}',
+    urlParams: { id: 1 },
+    manual: true,
+  });
+
+  // PATCH: /posts/{{id}}
+  public patchPost: IHttpResource<Patch> = myHttpResource().patch<IPost>({
+    url: '/api/posts/{{id}}',
+    urlParams: { id: 1 },
+    manual: true,
+  });
+
+  // DELETE: /posts/{{id}}
+  public deletePost: IHttpResource<Delete> = myHttpResource().delete<void>({
+    url: '/api/posts/{{id}}',
+    urlParams: { id: 1 },
+    manual: true,
+  });
+}
+```
+
+```ts
+// app.component.ts (usage snippets)
+import { Component, inject } from '@angular/core';
+import { AppService, IPost } from './services/app.service';
+import { forkJoin } from 'rxjs';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <button (click)="fetchPost()">Load posts</button>
+    <button (click)="sendPostHandler()">Create post</button>
+    <button (click)="putPostHandler()">PUT</button>
+    <button (click)="patchPostHandler()">PATCH</button>
+    <button (click)="deletePostHandler()">DELETE</button>
+    <button (click)="requestObservable()">forkJoin example</button>
+
+    @if (appService.posts.loading()) {
+        <div>Loading...</div>
+    }
+    
+    @if (appService.posts.error()) {
+     <pre">Error: {{ err | json }}</pre>
+    }
+   
+    <pre>{{ appService.posts.value() | json }}</pre>
+  `,
+})
+export class AppComponent {
+  protected appService = inject(AppService);
+
+  fetchPost(): void {
+    this.appService.posts.fetch();                 // GET
+  }
+
+  sendPostHandler(): void {
+    this.appService.sendPost.fetch();              // POST
+  }
+
+  putPostHandler(): void {
+    this.appService.updatePost.fetch({ body: { name: 'New', email: 'n@e.com', body: '...' }});
+  }
+
+  patchPostHandler(): void {
+    this.appService.patchPost.fetch({ body: { name: 'Patch only name' }});
+  }
+
+  deletePostHandler(): void {
+    this.appService.deletePost.fetch();
+  }
+
+  requestObservable(): void {
+    forkJoin({
+      one: this.appService.posts.request$({ urlParams: { postId: 5 } }),
+      two: this.appService.sendPost.request$(),
+    }).subscribe(({ one, two }) => {
+      // Manually update the signal if needed.
+      this.appService.posts.value.set(one);
+    });
+  }
+}
+```
+---
+
+## 🛠️ Key Features and How to Use Them
+
+### 1. URL Templates (createUrl)
+
+Use placeholders {{...}} in the url. They are filled from `urlParams`.
+
+````ts
+url: '/api/users/{{ userId }}/posts/{{ postId }}',
+urlParams: { userId: 42, postId: 7 } // → /api/users/42/posts/7
+````
+If a key is missing, you’ll get a clear error: “Missing value for URL parameter…”.
+
+### 2. Query and URL parameters
+
+Set them directly in the config or when calling `fetch()`/`request$()`.
+
+````ts
+public data: IHttpResource<Get> = this.http.get<IData>({
+  url: '/api/posts/{{postId}}',
+  queryParams: { limit: 20, search: 'angular' },
+  urlParams: { postId: 1 }
+});
+````
+Override at call time:
+
+````ts
+data.fetch({ 
+  queryParams: { limit: 5 },
+  urlParams: { postId: 1 }
+});
+````
+### 3. Request Body for POST/PUT/PATCH
+
+Define it in the config or override when calling:
+
+````ts
+public data: IHttpResource<Post> = this.http.post<IData>({
+  url: '/api/posts',
+  body: { title: 'Hello', body: 'World' },
+});
+````
+You can override it in `fetch()` or `request$()`.
+
+````ts
+data.fetch({ body: { title: 'Updated' } });
+````
+
+### 4. Auto vs Manual Mode
+
+- By default, requests are executed immediately.
+- Use `manual: true` to control execution manually.
+
+````ts
+public data: IHttpResource<Post> = myHttpResource().post<IData>({
+  url: '/api/items',
+  manual: true, // Doesn’t start automatically
+});
+
+// later:
+data.fetch();
+````
+### 5. Success / Error Handlers (`afterSuccess` / `afterError`)
+
+````ts
+public data: IHttpResource<Post> = myHttpResource().post<IData>({
+  url: '/api/items',
+  afterSuccess: (data) => console.log('OK', data),
+  afterError: (err) => console.warn('ERR', err),
+});
+````
+These callbacks are invoked automatically when you call `fetch()` or when the request is triggered automatically with manual = false. For `request$()` (a plain `Observable`), the callbacks won’t fire—you decide when to subscribe and what to do with the result.
+
+### 6. Pipe (RxJS operators)
+
+You can pipe RxJS operators into the request stream. You can’t override it in `fetch()` or `request()`.
+````ts
+import { map } from 'rxjs/operators';
+
+public data: IHttpResource<Get> =  myHttpResource().get<{ id: number; name: string }[]>({
+  url: '/api/users',
+  pipe: pipe(
+    map(list => list.filter(u => !!u.name))
+  ),
+});
+````
+### 7. Three Ways to Make a Request
+
+- Automatic request when `manual = false`. This does not prevent you from later calling `fetch()` or `request()`.
+- `fetch(fetchData?)` — makes a request, automatically sets `loading = true`, puts the result into `value`, and the error into `error`.
+- `request$(fetchData?)` — returns an `Observable<T>` without side effects. Handy for compositions (forkJoin, switchMap, etc.). The state in signals does not change unless you update it yourself.
+
+### 8. State Management
+
+Every resource provides:
+- `loading()` — true / false.
+- `value()` — current value (you can set/update).
+- `error()` — HttpErrorResponse | unknown (you can set/update).
+
+Example of manually updating the value:
+
+````ts
+resource.value.update(prev => [...prev, newItem]);
+````
+---
+
+## 🗂️ Types (to avoid confusion)
+
+* `Get/Delete → { queryParams?, urlParams? }`
+* `Post/Patch/Put → { body?, urlParams? }`
+* `IHttpResource<Method>`:
+  * `loading: Signal<boolean>`
+  * `value: WritableSignal<any>`
+  * `error: WritableSignal<unknown>`
+  * `fetch(fetData?: Method): void`
+  * `request$(fetData?: Method): Observable<any>`
+
+The generic T in get<T>() / post<T>() / ... is the type of the expected response.
+
+---
+
+## ✅ Best practices and tips:
+
+#### 1. Always set `initialValue` meaningfully (for example, [] for lists) to avoid unnecessary checks in the template.
+#### 2. Use `manual: true` for user actions (create/update/delete) so the request doesn’t fire automatically.
+#### 3. Use `request$()` for stream combinations (forkJoin, combineLatest, switchMap) — it’s a “pure” Observable.
+#### 4. `Signals are the source of truth`. After any external operations (dialogs, sockets, etc.), you can manually update with `value.set / update`.
+#### 5. `Errors`. Display error() in the UI; you can log them centrally via `afterError`.
+#### 6. `URL parameters.` If a key is missing in urlParams, the service will throw a clear error — which is good, it gets caught immediately.
+#### 7. `Headers`. If needed, put technical identifiers (traceId, locale, etc.) into headers at the resource level.
+
+---
+
+## 🐞 Common mistakes and how to avoid them
+
+- #### Forgot `urlParams` for the template → “Missing value for URL parameter…”. Solution: pass all the keys used in {{...}}.
+- #### `Incorrect initialValue` → the template expects [], but null came instead. Solution: set an appropriate default type.
+- #### Expecting `request$()` to update `value()` → it won’t. It’s a “pure” stream. Use `fetch()` or update value manually in subscribe.
+- #### Confusing `queryParams` and `body` → for GET/DELETE use `queryParams`, for POST/PUT/PATCH use `body`.
+
+--- 
+
+## 📋 Migration of existing code to MyHttpService (checklist)
+
+#### 1. Identify the endpoint → create a get/post/put/patch/delete resource.
+#### 2. Specify the `url` and `urlParams` (if there are {{...}}).
+#### 3. Set an `initialValue` of the appropriate type.
+#### 4. Decide whether auto-start (`manual`) is needed.
+#### 5. Move local handling to `afterSuccess/afterError` or into a `pipe` if it’s a data transformation.
+#### 6. In the component: read `loading/value/error`, and call `fetch()` on an event.
+
+## Thank you!!!
