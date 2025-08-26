@@ -3,6 +3,11 @@
 #### `MyHttpResource` is a wrapper around Angular’s `HttpClient` that provides a **reactive approach to working with HTTP requests**.
 #### It automatically manages states (`loading`, `error`, `value`), processes URL parameters, and allows easy configuration of post-request handling.
 
+[![npm version](https://img.shields.io/npm/v/my-http-resource.svg)](https://www.npmjs.com/package/my-http-resource)
+![Angular](https://img.shields.io/badge/angular-17%2B-red)
+![RxJS](https://img.shields.io/badge/RxJS-7%2B-blue)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 ---
 
 ## 💡 Installation and Concept

@@ -1,12 +1,40 @@
 {
   "name": "my-http-resource",
-  "version": "0.0.1",
+  "version": "0.0.4",
+  "description": "Reactive Angular HttpClient wrapper with RxJS & Signals. Angular 17+.",
+  "license": "MIT",
+  "author": "Viktor Polyakov",
   "peerDependencies": {
-    "@angular/common": "^20.1.0",
-    "@angular/core": "^20.1.0"
+    "@angular/common": ">=17.0.0",
+    "@angular/core":   ">=17.0.0",
+    "@angular/forms":  ">=17.0.0",
+    "rxjs":            ">=7.8.0"
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.6.0"
   },
+  "keywords": [
+    "angular",
+    "angular17",
+    "angular18",
+    "angular19",
+    "angular20",
+    "angular21",
+    "ng",
+    "httpclient",
+    "http-client",
+    "angular-http",
+    "angular-resource",
+    "rxjs",
+    "signals",
+    "http-wrapper",
+    "angular-signals"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/consoleLogMyAss/my-http-resource.git",
+    "directory": "projects/my-http-resource"
+  },
+  "homepage": "https://github.com/consoleLogMyAss/my-http-resource/tree/main/projects/my-http-resource#readme",
   "sideEffects": false
 }
