@@ -1,13 +1,16 @@
-import {DestroyRef, inject, Injectable} from '@angular/core';
+import { DestroyRef, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 
 import { IGetOrDeleteData, IHttpResource, IPostOrPutOrPatchData, IRequest } from '../interfaces';
 import { ReactiveHttpModel} from '../model/reactive.http.model';
 import {
   Delete,
-  Get, Patch, Post, Put,
-  TFetchData,
+  Get,
+  Patch,
+  Post,
+  Put,
   TMethod,
   TMethodFnGetOrDelete,
   TMethodFnPostOrPatchOrPut,
@@ -15,12 +18,11 @@ import {
   TResult,
   TUrlParams, TypeMethod
 } from '../types';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ParamsModel } from '../model/params.model';
 
 export class MyHttpService {
   private http: HttpClient = inject(HttpClient);
-  private destroyRef = inject(DestroyRef)
+  private destroyRef: DestroyRef = inject(DestroyRef);
 
   private getAfterActions<T>(reactiveData: ReactiveHttpModel<T>, data: IRequest<T>): TResult<T> {
     return {
@@ -57,7 +59,7 @@ export class MyHttpService {
     const { body, params, headers }: Partial<TOptionsData> = new ParamsModel(data);
     const isGetOrDelete: boolean = ['get', 'delete'].includes(method);
 
-    const request$ = isGetOrDelete
+    const request$: Observable<T> = isGetOrDelete
       ? (this.http[method] as TMethodFnGetOrDelete<T>)(url, { params, headers })
       : (this.http[method] as TMethodFnPostOrPatchOrPut<T>)(url, body, { headers });
 

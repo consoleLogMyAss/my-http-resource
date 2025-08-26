@@ -6,7 +6,7 @@
 [![npm version](https://img.shields.io/npm/v/my-http-resource.svg)](https://www.npmjs.com/package/my-http-resource)
 ![Angular](https://img.shields.io/badge/angular-17%2B-red)
 ![RxJS](https://img.shields.io/badge/RxJS-7%2B-blue)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/consoleLogMyAss/my-http-resource/blob/main/LICENSE)
 
 ---
 
