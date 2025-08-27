@@ -35,11 +35,11 @@ import { IHttpResource, myHttpResource, Get, Post, Put, Patch, Delete } from 'my
 
 ```ts
 public getRequestData: IHttpResource<Get> = myHttpResource().get<TData>({
-  url:'your_url',
+  url:'your_url/{{myId}}',
   pipe: pipe(delay(1000)),
   afterSuccess: (data) => this.afterSuccess(data),
   afterError: (error: HttpErrorResponse) => this.afterError(error),
-  urlParams: { postId: 2 },
+  urlParams: { myId: 2 },
   headers: {
     testHeader: '12345'
   },
@@ -55,7 +55,7 @@ public getRequestData: IHttpResource<Get> = myHttpResource().get<TData>({
 public postRequestData: IHttpResource<Post> = myHttpResource().post<TData>({
   url:'your_url/{{myId}}',
   manual: true,
-  body: testPost,  
+  body: { name: 'Elizabeth'},  
   pipe: pipe(delay(1000)),
   afterSuccess: (data) => this.afterSuccess(data),
   afterError: (error: HttpErrorResponse) => this.afterError(error),
@@ -74,7 +74,7 @@ public postRequestData: IHttpResource<Post> = myHttpResource().post<TData>({
 public putRequestData: IHttpResource<Put> = myHttpResource().put<TData>({
   url:'your_url/{{myId}}',
   manual: true,
-  body: testPost,  
+  body: { name: 'Elizabeth'},  
   pipe: pipe(delay(1000)),
   afterSuccess: (data) => this.afterSuccess(data),
   afterError: (error: HttpErrorResponse) => this.afterError(error),
@@ -92,7 +92,7 @@ public putRequestData: IHttpResource<Put> = myHttpResource().put<TData>({
 public patchRequestData: IHttpResource<Patch> = myHttpResource().patch<TData>({
   url:'your_url/{{myId}}',
   manual: true,
-  body: testPost,  
+  body: { name: 'Elizabeth'},
   pipe: pipe(delay(1000)),
   afterSuccess: (data) => this.afterSuccess(data),
   afterError: (error: HttpErrorResponse) => this.afterError(error),
