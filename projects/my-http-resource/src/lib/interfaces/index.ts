@@ -15,11 +15,12 @@ export interface IBaseRequestData<T> {
   url: string;
   afterSuccess?: (data: T) => void;
   afterError?: (error: HttpErrorResponse) => void;
+  headers?: Record<string, string | number>
+  initialValue?: any
   manual?: boolean;
+  mergeValues?: boolean;
   pipe?: UnaryFunction<Observable<T>, Observable<T>>;
   urlParams?: TUrlParams;
-  initialValue?: any
-  headers?: Record<string, string | number>
 }
 
 export interface IGetOrDeleteData<T> extends IBaseRequestData<T> {

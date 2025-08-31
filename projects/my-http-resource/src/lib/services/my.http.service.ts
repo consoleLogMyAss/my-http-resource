@@ -27,18 +27,45 @@ export class MyHttpService {
   private getAfterActions<T>(reactiveData: ReactiveHttpModel<T>, data: IRequest<T>): TResult<T> {
     return {
       next: (result: T): void => {
-        reactiveData.value.set(result)
-        reactiveData.loading.set(false);
+        const value: T = data.mergeValues
+          ? this.mergeResult(result, reactiveData.value())
+          : result
 
-        if (data.afterSuccess) data.afterSuccess(result);
+        reactiveData.value.set(value);
+
+        if (data.afterSuccess) data.afterSuccess(value);
+
+        reactiveData.loading.set(false);
       },
       error: (error: HttpErrorResponse) => {
         reactiveData.error.set(error)
-        reactiveData.loading.set(false);
 
         if (data.afterError) data.afterError(error);
+
+        reactiveData.loading.set(false);
       },
     }
+  }
+
+  private mergeResult<T>(result: T, currentValue: T): T {
+    if (!result || !currentValue || typeof result !== typeof currentValue ) {
+      return result;
+    }
+
+    if (Array.isArray(result) && Array.isArray(currentValue)) {
+      return [...currentValue, ...result] as T;
+    }
+
+    if (
+      typeof result === 'object' &&
+      typeof currentValue === 'object' &&
+      !Array.isArray(result) &&
+      !Array.isArray(currentValue)
+    ) {
+      return {...currentValue, ...result};
+    }
+
+    return result;
   }
 
   private createUrl(url: string, urlParams: TUrlParams): string {
@@ -93,11 +120,13 @@ export class MyHttpService {
     method: TMethod,
   ): IHttpResource<Method> {
     const reactiveData: ReactiveHttpModel<T> = new ReactiveHttpModel(data.initialValue);
-    const getAfterActions: TResult<T> = this.getAfterActions(reactiveData, data);
 
     if (!data.manual) {
       reactiveData.loading.set(true);
-      this.getHttp(method, data).subscribe(getAfterActions);
+
+      this.getHttp(method, data).subscribe(
+        this.getAfterActions(reactiveData, data)
+      );
     }
 
     return {
@@ -110,10 +139,11 @@ export class MyHttpService {
       fetch: (fetchData: Method) => {
         reactiveData.loading.set(true);
 
-        this.getHttp(method, {
-          ...data,
-          ...fetchData,
-        }).subscribe(getAfterActions);
+        const mergedData: Req & Method = {  ...data, ...fetchData };
+
+        this.getHttp(method, mergedData).subscribe(
+          this.getAfterActions(reactiveData, mergedData)
+        );
       }
     }
   }

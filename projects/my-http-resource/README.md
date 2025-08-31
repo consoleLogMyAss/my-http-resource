@@ -12,6 +12,8 @@
 
 ## 💡 Installation and Concept
 
+⚠️ ***Important***. MyHttpResource uses `HttpClient`, so don’t forget to add a call to the `provideHttpClient()` function in the project configuration under the providers field.
+
 - You create a “resource” once (e.g., posts, sendPost, updatePost, etc.) with all its settings.
 - A resource always includes:
   * `loading: Signal<boolean>`
@@ -45,7 +47,8 @@ public getRequestData: IHttpResource<Get> = myHttpResource().get<TData>({
   },
   queryParams: { currency: 'USD' },
   manual: true,
-  initialValue: []
+  initialValue: [],
+  mergeValues: false,
 });
 ```
 
@@ -64,7 +67,8 @@ public postRequestData: IHttpResource<Post> = myHttpResource().post<TData>({
     testHeader: '12345'
   },
   manual: true,
-  initialValue: []
+  initialValue: [],
+  mergeValues: false,
 })
 ```
 
@@ -83,7 +87,8 @@ public putRequestData: IHttpResource<Put> = myHttpResource().put<TData>({
     testHeader: '12345'
   },
   manual: true,
-  initialValue: []
+  initialValue: [],
+  mergeValues: false,
 })
 ```
 ### 4. PATCH request
@@ -101,7 +106,8 @@ public patchRequestData: IHttpResource<Patch> = myHttpResource().patch<TData>({
     testHeader: '12345'
   },
   manual: true,
-  initialValue: []
+  initialValue: [],
+  mergeValues: false,
 })
 ```
 
@@ -119,7 +125,8 @@ public deleteRequestData: IHttpResource<Delete> = myHttpResource().delete<TData>
   },
   queryParams: { currency: 'USD' },
   manual: true,
-  initialValue: []
+  initialValue: [],
+  mergeValues: false,
 });
 ```
 
@@ -158,7 +165,8 @@ export class AppService {
     initialValue: [],           // What to populate value with before the response.
     afterSuccess: (data) => console.log('got posts', data),
     afterError: (e) => console.warn('get error', e),
-    // manual: true,             // If you need to disable auto-start.
+    // manual: true,  // If you need to disable auto-start.
+    mergeValues: true, // If you want the received data to be merged with the previous ones instead of overwriting them.
   });
 
   // POST: /posts
@@ -167,6 +175,7 @@ export class AppService {
     body: { name: 'John', email: 'john@mail.com', body: 'Hello' },
     headers: { 'X-Trace-Id': 'abc-123' },
     manual: true,               // Send manually via fetch().
+    mergeValues: true
   });
 
   // PUT: /posts/{{id}}
@@ -231,7 +240,10 @@ export class AppComponent {
   }
 
   putPostHandler(): void {
-    this.appService.updatePost.fetch({ body: { name: 'New', email: 'n@e.com', body: '...' }});
+    this.appService.updatePost.fetch({ 
+      body: { name: 'New', email: 'n@e.com', body: '...' },
+      mergeValues: true,
+    });
   }
 
   patchPostHandler(): void {
@@ -340,13 +352,30 @@ public data: IHttpResource<Get> =  myHttpResource().get<{ id: number; name: stri
   ),
 });
 ````
-### 7. Three Ways to Make a Request
+### 7. Data merging
+- If you need to merge the data from the previous request with the current one, use the flag `mergeValues: true`.
+- The data must be of the same type — either an array or an object. If the data types do not match, the `mergeValues` flag will not work.
+```ts
+public data: IHttpResource<Post> = myHttpResource().post<IData>({
+  url: '/api/items',
+  manual: true, 
+  initialValue: [],
+  mergeValues: true,
+});
+
+data.fetch({ 
+  body: { title: 'Updated' }, 
+  mergeValues: false 
+});
+
+```
+### 8. Three Ways to Make a Request
 
 - Automatic request when `manual = false`. This does not prevent you from later calling `fetch()` or `request()`.
 - `fetch(fetchData?)` — makes a request, automatically sets `loading = true`, puts the result into `value`, and the error into `error`.
 - `request$(fetchData?)` — returns an `Observable<T>` without side effects. Handy for compositions (forkJoin, switchMap, etc.). The state in signals does not change unless you update it yourself.
 
-### 8. State Management
+### 9. State Management
 
 Every resource provides:
 - `loading()` — true / false.
@@ -378,12 +407,13 @@ The generic T in get<T>() / post<T>() / ... is the type of the expected response
 ## ✅ Best practices and tips:
 
 #### 1. Always set `initialValue` meaningfully (for example, [] for lists) to avoid unnecessary checks in the template.
-#### 2. Use `manual: true` for user actions (create/update/delete) so the request doesn’t fire automatically.
-#### 3. Use `request$()` for stream combinations (forkJoin, combineLatest, switchMap) — it’s a “pure” Observable.
-#### 4. `Signals are the source of truth`. After any external operations (dialogs, sockets, etc.), you can manually update with `value.set / update`.
-#### 5. `Errors`. Display error() in the UI; you can log them centrally via `afterError`.
-#### 6. `URL parameters.` If a key is missing in urlParams, the service will throw a clear error — which is good, it gets caught immediately.
-#### 7. `Headers`. If needed, put technical identifiers (traceId, locale, etc.) into headers at the resource level.
+#### 2. Use `mergeValues: true` if you want the data received from the server not to overwrite the current value, but to be merged with it. Keep in mind that the type of the current value and the data received from the server must match. Otherwise, mergeValues will not work, and the server response will simply overwrite the current value. 
+#### 3. Use `manual: true` for user actions (create/update/delete) so the request doesn’t fire automatically.
+#### 4. Use `request$()` for stream combinations (forkJoin, combineLatest, switchMap) — it’s a “pure” Observable.
+#### 5. `Signals are the source of truth`. After any external operations (dialogs, sockets, etc.), you can manually update with `value.set / update`.
+#### 6. `Errors`. Display error() in the UI; you can log them centrally via `afterError`.
+#### 7. `URL parameters.` If a key is missing in urlParams, the service will throw a clear error — which is good, it gets caught immediately.
+#### 8. `Headers`. If needed, put technical identifiers (traceId, locale, etc.) into headers at the resource level.
 
 ---
 
@@ -393,7 +423,7 @@ The generic T in get<T>() / post<T>() / ... is the type of the expected response
 - #### `Incorrect initialValue` → the template expects [], but null came instead. Solution: set an appropriate default type.
 - #### Expecting `request$()` to update `value()` → it won’t. It’s a “pure” stream. Use `fetch()` or update value manually in subscribe.
 - #### Confusing `queryParams` and `body` → for GET/DELETE use `queryParams`, for POST/PUT/PATCH use `body`.
-
+- #### I set `mergeValues`, but the data isn’t merging? Verify that the data type is an array or an object, and that the server response type matches the type of the current value.
 --- 
 
 ## 📋 Migration of existing code to MyHttpService (checklist)
@@ -405,4 +435,4 @@ The generic T in get<T>() / post<T>() / ... is the type of the expected response
 #### 5. Move local handling to `afterSuccess/afterError` or into a `pipe` if it’s a data transformation.
 #### 6. In the component: read `loading/value/error`, and call `fetch()` on an event.
 
-## Thank you!!!
+## Thank you ❤️!!!

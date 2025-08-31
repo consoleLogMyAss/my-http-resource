@@ -17,6 +17,7 @@ export type TOptionsData = {
 
 export type TFetchData = {
   urlParams?: TUrlParams,
+  mergeValues?: boolean;
 }
 
 export type Get = {

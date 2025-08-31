@@ -17,10 +17,18 @@ export interface IPost {
   styleUrl: './app.scss'
 })
 export class App {
+  protected postId: number = 3;
   protected appService: AppService = inject(AppService);
 
   protected fetchPost(): void {
-    this.appService.posts.fetch();
+    this.appService.posts.fetch({
+      mergeValues: this.postId % 2 === 0,
+      urlParams: {
+        postId: this.postId,
+      }
+    });
+
+    this.postId += 1;
   }
 
   protected sendPostHandler(): void {

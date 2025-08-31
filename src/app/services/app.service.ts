@@ -32,7 +32,8 @@ export class AppService {
     },
     queryParams: { currency: 'USD' },
     manual: true,
-    initialValue: []
+    mergeValues: true,
+    initialValue: [],
   });
 
   private afterSuccess(data: IPost[]) {
