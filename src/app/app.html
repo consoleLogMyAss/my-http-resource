@@ -1,3 +1,7 @@
+<div class="statistic">
+  Statistics for the last day: <span>{{ appService.statisticDownloads.value()?.downloads }}</span>
+</div>
+
 @if (appService.posts.loading()) {
   <p class="loading">Loading data ...</p>
 } @else {

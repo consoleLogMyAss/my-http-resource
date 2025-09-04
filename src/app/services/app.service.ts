@@ -12,10 +12,27 @@ export const testPost = {
   body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, similique.'
 }
 
+export interface IStatistic {
+  "downloads": number;
+  "start": Date;
+  "end": Date;
+  "package": string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
+  /**
+   * last-day
+   * last-week
+   * last-month
+   * yyyy-mm-dd
+   */
+  public statisticDownloads: IHttpResource<Get> = myHttpResource().get<IStatistic>({
+    url: 'https://api.npmjs.org/downloads/point/last-day/my-http-resource',
+  })
+
   public posts: IHttpResource<Get> = myHttpResource().get<IPost[]>({
     url:'https://jsonplaceholder.typicode.com/posts/{{postId}}/comments',
     pipe: pipe(
