@@ -3,9 +3,9 @@ import { Observable, UnaryFunction } from 'rxjs';
 import { TQueryParams, TUrlParams } from '../types';
 import { HttpErrorResponse } from '@angular/common/http';
 
-export interface IHttpResource<Method> {
+export interface IHttpResource<Method, T = any> {
   loading: Signal<boolean>,
-  value: WritableSignal<any>,
+  value: WritableSignal<T>,
   error: WritableSignal<unknown>,
   fetch: (fetData?: Method) => void,
   request$: (fetData?: Method) => Observable<any>,

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import {AppService, testPost} from './services/app.service';
-import {forkJoin} from 'rxjs';
+import { AppService, testPost } from './services/app.service';
+import { forkJoin } from 'rxjs';
 
 export interface IPost {
   postId: number;
@@ -43,7 +43,7 @@ export class App {
 
   protected putPostHandler(): void {
     this.appService.updatePost.fetch({
-      body: testPost
+      body: testPost,
     });
   }
 

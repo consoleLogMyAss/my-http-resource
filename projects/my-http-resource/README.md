@@ -36,7 +36,7 @@ import { IHttpResource, myHttpResource, Get, Post, Put, Patch, Delete } from 'my
 ### 1. GET request
 
 ```ts
-public getRequestData: IHttpResource<Get> = myHttpResource().get<TData>({
+public getRequestData = myHttpResource().get<TData>({
   url:'your_url/{{myId}}',
   pipe: pipe(delay(1000)),
   afterSuccess: (data) => this.afterSuccess(data),
@@ -55,7 +55,7 @@ public getRequestData: IHttpResource<Get> = myHttpResource().get<TData>({
 ### 2. POST request
 
 ```ts
-public postRequestData: IHttpResource<Post> = myHttpResource().post<TData>({
+public postRequestData = myHttpResource().post<TData>({
   url:'your_url/{{myId}}',
   manual: true,
   body: { name: 'Elizabeth'},  
@@ -75,7 +75,7 @@ public postRequestData: IHttpResource<Post> = myHttpResource().post<TData>({
 ### 3. PUT request
 
 ```ts
-public putRequestData: IHttpResource<Put> = myHttpResource().put<TData>({
+public putRequestData = myHttpResource().put<TData>({
   url:'your_url/{{myId}}',
   manual: true,
   body: { name: 'Elizabeth'},  
@@ -94,7 +94,7 @@ public putRequestData: IHttpResource<Put> = myHttpResource().put<TData>({
 ### 4. PATCH request
 
 ```ts
-public patchRequestData: IHttpResource<Patch> = myHttpResource().patch<TData>({
+public patchRequestData = myHttpResource().patch<TData>({
   url:'your_url/{{myId}}',
   manual: true,
   body: { name: 'Elizabeth'},
@@ -114,7 +114,7 @@ public patchRequestData: IHttpResource<Patch> = myHttpResource().patch<TData>({
 ### 5. DELETE request
 
 ```ts
-public deleteRequestData: IHttpResource<Delete> = myHttpResource().delete<TData>({
+public deleteRequestData= myHttpResource().delete<TData>({
   url:'your_url/{{myId}}',
   pipe: pipe(delay(1000)),
   afterSuccess: (data) => this.afterSuccess(data),
@@ -158,7 +158,7 @@ export interface IPost {
 @Injectable()
 export class AppService {
   // GET: /posts/{{postId}}?limit=...
-  public posts: IHttpResource<Get> = myHttpResource().get<IPost[]>({
+  public posts = myHttpResource().get<IPost[]>({
     url: '/api/posts/{{postId}}',
     urlParams: { postId: 1 },
     queryParams: { limit: 10 },
@@ -170,7 +170,7 @@ export class AppService {
   });
 
   // POST: /posts
-  public sendPost: IHttpResource<Post> = myHttpResource().post<IPost>({
+  public sendPost = myHttpResource().post<IPost>({
     url: '/api/posts',
     body: { name: 'John', email: 'john@mail.com', body: 'Hello' },
     headers: { 'X-Trace-Id': 'abc-123' },
@@ -179,21 +179,21 @@ export class AppService {
   });
 
   // PUT: /posts/{{id}}
-  public updatePost: IHttpResource<Put> = myHttpResource().put<IPost>({
+  public updatePost = myHttpResource().put<IPost>({
     url: '/api/posts/{{id}}',
     urlParams: { id: 1 },
     manual: true,
   });
 
   // PATCH: /posts/{{id}}
-  public patchPost: IHttpResource<Patch> = myHttpResource().patch<IPost>({
+  public patchPost = myHttpResource().patch<IPost>({
     url: '/api/posts/{{id}}',
     urlParams: { id: 1 },
     manual: true,
   });
 
   // DELETE: /posts/{{id}}
-  public deletePost: IHttpResource<Delete> = myHttpResource().delete<void>({
+  public deletePost = myHttpResource().delete<void>({
     url: '/api/posts/{{id}}',
     urlParams: { id: 1 },
     manual: true,
@@ -284,7 +284,7 @@ If a key is missing, you’ll get a clear error: “Missing value for URL parame
 Set them directly in the config or when calling `fetch()`/`request$()`.
 
 ````ts
-public data: IHttpResource<Get> = this.http.get<IData>({
+public data = this.http.get<IData>({
   url: '/api/posts/{{postId}}',
   queryParams: { limit: 20, search: 'angular' },
   urlParams: { postId: 1 }
@@ -303,7 +303,7 @@ data.fetch({
 Define it in the config or override when calling:
 
 ````ts
-public data: IHttpResource<Post> = this.http.post<IData>({
+public data = this.http.post<IData>({
   url: '/api/posts',
   body: { title: 'Hello', body: 'World' },
 });
@@ -320,7 +320,7 @@ data.fetch({ body: { title: 'Updated' } });
 - Use `manual: true` to control execution manually.
 
 ````ts
-public data: IHttpResource<Post> = myHttpResource().post<IData>({
+public data = myHttpResource().post<IData>({
   url: '/api/items',
   manual: true, // Doesn’t start automatically
 });
@@ -331,7 +331,7 @@ data.fetch();
 ### 5. Success / Error Handlers (`afterSuccess` / `afterError`)
 
 ````ts
-public data: IHttpResource<Post> = myHttpResource().post<IData>({
+public data = myHttpResource().post<IData>({
   url: '/api/items',
   afterSuccess: (data) => console.log('OK', data),
   afterError: (err) => console.warn('ERR', err),
@@ -345,7 +345,7 @@ You can pipe RxJS operators into the request stream. You can’t override it in 
 ````ts
 import { map } from 'rxjs/operators';
 
-public data: IHttpResource<Get> =  myHttpResource().get<{ id: number; name: string }[]>({
+public data =  myHttpResource().get<{ id: number; name: string }[]>({
   url: '/api/users',
   pipe: pipe(
     map(list => list.filter(u => !!u.name))
@@ -356,7 +356,7 @@ public data: IHttpResource<Get> =  myHttpResource().get<{ id: number; name: stri
 - If you need to merge the data from the previous request with the current one, use the flag `mergeValues: true`.
 - The data must be of the same type — either an array or an object. If the data types do not match, the `mergeValues` flag will not work.
 ```ts
-public data: IHttpResource<Post> = myHttpResource().post<IData>({
+public data = myHttpResource().post<IData>({
   url: '/api/items',
   manual: true, 
   initialValue: [],

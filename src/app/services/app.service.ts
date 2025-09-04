@@ -29,11 +29,12 @@ export class AppService {
    * last-month
    * yyyy-mm-dd
    */
-  public statisticDownloads: IHttpResource<Get> = myHttpResource().get<IStatistic>({
+  public statisticDownloads = myHttpResource().get<IStatistic>({
     url: 'https://api.npmjs.org/downloads/point/last-day/my-http-resource',
+    initialValue: {}
   })
 
-  public posts: IHttpResource<Get> = myHttpResource().get<IPost[]>({
+  public posts = myHttpResource().get<IPost[]>({
     url:'https://jsonplaceholder.typicode.com/posts/{{postId}}/comments',
     pipe: pipe(
       delay(1000),
@@ -61,7 +62,7 @@ export class AppService {
     console.log(error);
   }
 
-  public sendPost: IHttpResource<Post> = myHttpResource().post({
+  public sendPost: IHttpResource<Post, IPost> = myHttpResource().post({
     url:'https://jsonplaceholder.typicode.com/posts',
     manual: true,
     pipe: pipe(delay(1000)),

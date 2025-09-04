@@ -95,30 +95,30 @@ export class MyHttpService {
     return data.pipe ? baseRequest.pipe(data.pipe) : baseRequest;
   }
 
-  public get<T = any>(data: IGetOrDeleteData<T>): IHttpResource<Get> {
+  public get<T = any>(data: IGetOrDeleteData<T>): IHttpResource<Get, T> {
     return this.createResource<T, IGetOrDeleteData<T>, Get>(data, 'get');
   }
 
-  public post<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Post> {
+  public post<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Post, T> {
     return this.createResource<T, IPostOrPutOrPatchData<T>, Post>(data, 'post');
   }
 
-  public patch<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Patch> {
+  public patch<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Patch, T> {
     return this.createResource<T, IPostOrPutOrPatchData<T>, Patch>(data, 'patch');
   }
 
-  public put<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Put> {
+  public put<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Put, T> {
     return this.createResource<T, IPostOrPutOrPatchData<T>, Put>(data, 'put');
   }
 
-  public delete<T = any>(data: IGetOrDeleteData<T>): IHttpResource<Delete> {
+  public delete<T = any>(data: IGetOrDeleteData<T>): IHttpResource<Delete, T> {
     return this.createResource<T, IGetOrDeleteData<T>, Delete>(data, 'delete');
   }
 
   private createResource<T, Req extends IRequest<T>, Method extends TypeMethod>(
     data: Req,
     method: TMethod,
-  ): IHttpResource<Method> {
+  ): IHttpResource<Method, T> {
     const reactiveData: ReactiveHttpModel<T> = new ReactiveHttpModel(data.initialValue);
 
     if (!data.manual) {
