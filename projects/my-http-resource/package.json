@@ -1,6 +1,6 @@
 {
   "name": "my-http-resource",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Reactive Angular HttpClient wrapper with RxJS & Signals. Angular 17+.",
   "license": "MIT",
   "author": "Viktor Polyakov",

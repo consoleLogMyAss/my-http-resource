@@ -39,7 +39,7 @@ import { IHttpResource, myHttpResource, Get, Post, Put, Patch, Delete } from 'my
 public getRequestData = myHttpResource().get<TData>({
   url:'your_url/{{myId}}',
   pipe: pipe(delay(1000)),
-  afterSuccess: (data) => this.afterSuccess(data),
+  afterSuccess: (data: TData) => this.afterSuccess(data),
   afterError: (error: HttpErrorResponse) => this.afterError(error),
   urlParams: { myId: 2 },
   headers: {
@@ -60,7 +60,7 @@ public postRequestData = myHttpResource().post<TData>({
   manual: true,
   body: { name: 'Elizabeth'},  
   pipe: pipe(delay(1000)),
-  afterSuccess: (data) => this.afterSuccess(data),
+  afterSuccess: (data: TData) => this.afterSuccess(data),
   afterError: (error: HttpErrorResponse) => this.afterError(error),
   urlParams: { myId: 2 },
   headers: {
@@ -80,7 +80,7 @@ public putRequestData = myHttpResource().put<TData>({
   manual: true,
   body: { name: 'Elizabeth'},  
   pipe: pipe(delay(1000)),
-  afterSuccess: (data) => this.afterSuccess(data),
+  afterSuccess: (data: TData) => this.afterSuccess(data),
   afterError: (error: HttpErrorResponse) => this.afterError(error),
   urlParams: { myId: 2 },
   headers: {
@@ -99,7 +99,7 @@ public patchRequestData = myHttpResource().patch<TData>({
   manual: true,
   body: { name: 'Elizabeth'},
   pipe: pipe(delay(1000)),
-  afterSuccess: (data) => this.afterSuccess(data),
+  afterSuccess: (data: TData) => this.afterSuccess(data),
   afterError: (error: HttpErrorResponse) => this.afterError(error),
   urlParams: { myId: 2 },
   headers: {
@@ -114,10 +114,10 @@ public patchRequestData = myHttpResource().patch<TData>({
 ### 5. DELETE request
 
 ```ts
-public deleteRequestData= myHttpResource().delete<TData>({
+public deleteRequestData = myHttpResource().delete<TData>({
   url:'your_url/{{myId}}',
   pipe: pipe(delay(1000)),
-  afterSuccess: (data) => this.afterSuccess(data),
+  afterSuccess: (data: TData) => this.afterSuccess(data),
   afterError: (error: HttpErrorResponse) => this.afterError(error),
   urlParams: { postId: 2 },
   headers: {
@@ -137,15 +137,7 @@ public deleteRequestData= myHttpResource().delete<TData>({
 ```ts
 // app.service.ts
 import { Injectable, inject } from '@angular/core';
-import { 
-  IHttpResource, 
-  myHttpResource, 
-  Get, 
-  Post, 
-  Put, 
-  Patch, 
-  Delete
-} from 'my-http-resource';
+import { myHttpResource } from 'my-http-resource';
 
 export interface IPost {
   postId: number;
@@ -163,7 +155,7 @@ export class AppService {
     urlParams: { postId: 1 },
     queryParams: { limit: 10 },
     initialValue: [],           // What to populate value with before the response.
-    afterSuccess: (data) => console.log('got posts', data),
+    afterSuccess: (data: IPost[]) => console.log('got posts', data),
     afterError: (e) => console.warn('get error', e),
     // manual: true,  // If you need to disable auto-start.
     mergeValues: true, // If you want the received data to be merged with the previous ones instead of overwriting them.
