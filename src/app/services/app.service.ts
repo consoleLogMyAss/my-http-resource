@@ -99,6 +99,7 @@ export class AppService {
   public deletePost: IHttpResource<Delete> = myHttpResource().delete({
     url:'https://jsonplaceholder.typicode.com/posts/{{postId}}',
     urlParams: { postId: 1 },
+    body: {name: 'Ivan' },
     manual: true,
     afterSuccess: (data: IPost) => this.afterDeletePostHandler(data),
   })

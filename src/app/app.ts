@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { AppService, testPost } from './services/app.service';
 import { forkJoin } from 'rxjs';
+import {HttpClient} from '@angular/common/http';
 
 export interface IPost {
   postId: number;
@@ -19,6 +20,7 @@ export interface IPost {
 export class App {
   protected postId: number = 3;
   protected appService: AppService = inject(AppService);
+  protected http: HttpClient = inject(HttpClient);
 
   protected fetchPost(): void {
     this.appService.posts.fetch({
@@ -54,6 +56,10 @@ export class App {
   }
 
   protected deletePostHandler() {
+    this.http.delete(`https://jsonplaceholder.typicode.com/posts/1`, {
+      body: {name: 'Vasya'},
+    }).subscribe();
+
     this.appService.deletePost.fetch();
   }
 

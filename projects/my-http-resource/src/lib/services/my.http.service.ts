@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 
-import { IGetOrDeleteData, IHttpResource, IPostOrPutOrPatchData, IRequest } from '../interfaces';
+import { IWithOutBody, IHttpResource, IWithBody, IRequest } from '../interfaces';
 import { ReactiveHttpModel} from '../model/reactive.http.model';
 import {
   Delete,
@@ -12,8 +12,8 @@ import {
   Post,
   Put,
   TMethod,
-  TMethodFnGetOrDelete,
-  TMethodFnPostOrPatchOrPut,
+  TMethodWithoutBody,
+  TMethodFnWithBody,
   TOptionsData,
   TResult,
   TUrlParams, TypeMethod
@@ -81,38 +81,52 @@ export class MyHttpService {
     });
   }
 
+  private createConfigForWithOutBody(method: TMethod, paramsModel: Partial<TOptionsData>): any {
+    const config: Partial<TOptionsData> = {
+      params: paramsModel.params,
+      headers: paramsModel.headers
+    }
+
+    if (method === 'delete') {
+      config.body = paramsModel.body;
+    }
+
+    return config;
+  }
+
   private getHttp<T>(method: TMethod, data: IRequest<T>): Observable<T> {
     const url: string = this.createUrl(data.url, data.urlParams);
-    const { body, params, headers }: Partial<TOptionsData> = new ParamsModel(data);
-    const isGetOrDelete: boolean = ['get', 'delete'].includes(method);
+    const paramsModel: Partial<TOptionsData> = new ParamsModel(data);
+    const { body, headers }: Partial<TOptionsData> = paramsModel;
+    const isWithoutBody: boolean = ['get', 'delete'].includes(method);
 
-    const request$: Observable<T> = isGetOrDelete
-      ? (this.http[method] as TMethodFnGetOrDelete<T>)(url, { params, headers })
-      : (this.http[method] as TMethodFnPostOrPatchOrPut<T>)(url, body, { headers });
+    const request$: Observable<T> = isWithoutBody
+      ? (this.http[method] as TMethodWithoutBody<T>)(url, this.createConfigForWithOutBody(method, paramsModel))
+      : (this.http[method] as TMethodFnWithBody<T>)(url, body, { headers });
 
     const baseRequest: Observable<T> = request$.pipe(takeUntilDestroyed(this.destroyRef));
 
     return data.pipe ? baseRequest.pipe(data.pipe) : baseRequest;
   }
 
-  public get<T = any>(data: IGetOrDeleteData<T>): IHttpResource<Get, T> {
-    return this.createResource<T, IGetOrDeleteData<T>, Get>(data, 'get');
+  public get<T = any>(data: IWithOutBody<T>): IHttpResource<Get, T> {
+    return this.createResource<T, IWithOutBody<T>, Get>(data, 'get');
   }
 
-  public post<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Post, T> {
-    return this.createResource<T, IPostOrPutOrPatchData<T>, Post>(data, 'post');
+  public delete<T = any>(data: IWithOutBody<T>): IHttpResource<Delete, T> {
+    return this.createResource<T, IWithOutBody<T>, Delete>(data, 'delete');
   }
 
-  public patch<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Patch, T> {
-    return this.createResource<T, IPostOrPutOrPatchData<T>, Patch>(data, 'patch');
+  public post<T = any>(data: IWithBody<T>): IHttpResource<Post, T> {
+    return this.createResource<T, IWithBody<T>, Post>(data, 'post');
   }
 
-  public put<T = any>(data: IPostOrPutOrPatchData<T>): IHttpResource<Put, T> {
-    return this.createResource<T, IPostOrPutOrPatchData<T>, Put>(data, 'put');
+  public patch<T = any>(data: IWithBody<T>): IHttpResource<Patch, T> {
+    return this.createResource<T, IWithBody<T>, Patch>(data, 'patch');
   }
 
-  public delete<T = any>(data: IGetOrDeleteData<T>): IHttpResource<Delete, T> {
-    return this.createResource<T, IGetOrDeleteData<T>, Delete>(data, 'delete');
+  public put<T = any>(data: IWithBody<T>): IHttpResource<Put, T> {
+    return this.createResource<T, IWithBody<T>, Put>(data, 'put');
   }
 
   private createResource<T, Req extends IRequest<T>, Method extends TypeMethod>(

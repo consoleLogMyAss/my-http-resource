@@ -47,6 +47,6 @@ export type TResult<U> = {
 
 export type TMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 export type TypeMethod = Get | Patch | Put | Post | Delete;
-export type TMethodFnGetOrDelete<T> = (u: string, o?: any) => Observable<T>
-export type TMethodFnPostOrPatchOrPut<T> = (u: string, o: object, h: object) => Observable<T>
+export type TMethodWithoutBody<T> = (u: string, o?: any) => Observable<T>
+export type TMethodFnWithBody<T> = (u: string, o: object, h: object) => Observable<T>
 

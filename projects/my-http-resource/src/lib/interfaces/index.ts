@@ -23,14 +23,14 @@ export interface IBaseRequestData<T> {
   urlParams?: TUrlParams;
 }
 
-export interface IGetOrDeleteData<T> extends IBaseRequestData<T> {
+export interface IWithOutBody<T> extends IBaseRequestData<T> {
   queryParams?: TQueryParams;
 }
 
-export interface IPostOrPutOrPatchData<T> extends IBaseRequestData<T> {
+export interface IWithBody<T> extends IBaseRequestData<T> {
   body?: object;
 }
 
 export type IRequest<T> =
-  | IGetOrDeleteData<T>
-  | IPostOrPutOrPatchData<T>
+  | IWithOutBody<T>
+  | IWithBody<T>
