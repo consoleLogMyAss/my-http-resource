@@ -27,6 +27,11 @@ export interface IWithOutBody<T> extends IBaseRequestData<T> {
   queryParams?: TQueryParams;
 }
 
+export interface IWithOutBodyDelete<T> extends IWithOutBody<T> {
+  queryParams?: TQueryParams;
+  body?: object;
+}
+
 export interface IWithBody<T> extends IBaseRequestData<T> {
   body?: object;
 }

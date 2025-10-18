@@ -20,7 +20,6 @@ export interface IPost {
 export class App {
   protected postId: number = 3;
   protected appService: AppService = inject(AppService);
-  protected http: HttpClient = inject(HttpClient);
 
   protected fetchPost(): void {
     this.appService.posts.fetch({
@@ -56,10 +55,6 @@ export class App {
   }
 
   protected deletePostHandler() {
-    this.http.delete(`https://jsonplaceholder.typicode.com/posts/1`, {
-      body: {name: 'Vasya'},
-    }).subscribe();
-
     this.appService.deletePost.fetch();
   }
 

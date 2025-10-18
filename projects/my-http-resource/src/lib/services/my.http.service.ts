@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 
-import { IWithOutBody, IHttpResource, IWithBody, IRequest } from '../interfaces';
+import {IWithOutBody, IHttpResource, IWithBody, IRequest, IWithOutBodyDelete} from '../interfaces';
 import { ReactiveHttpModel} from '../model/reactive.http.model';
 import {
   Delete,
@@ -81,13 +81,13 @@ export class MyHttpService {
     });
   }
 
-  private createConfigForWithOutBody(method: TMethod, paramsModel: Partial<TOptionsData>): any {
+  private createConfigForWithOutBody(paramsModel: Partial<TOptionsData>): any {
     const config: Partial<TOptionsData> = {
       params: paramsModel.params,
       headers: paramsModel.headers
     }
 
-    if (method === 'delete') {
+    if (Object.keys(paramsModel.body).length > 0) {
       config.body = paramsModel.body;
     }
 
@@ -101,7 +101,7 @@ export class MyHttpService {
     const isWithoutBody: boolean = ['get', 'delete'].includes(method);
 
     const request$: Observable<T> = isWithoutBody
-      ? (this.http[method] as TMethodWithoutBody<T>)(url, this.createConfigForWithOutBody(method, paramsModel))
+      ? (this.http[method] as TMethodWithoutBody<T>)(url, this.createConfigForWithOutBody(paramsModel))
       : (this.http[method] as TMethodFnWithBody<T>)(url, body, { headers });
 
     const baseRequest: Observable<T> = request$.pipe(takeUntilDestroyed(this.destroyRef));
@@ -113,8 +113,8 @@ export class MyHttpService {
     return this.createResource<T, IWithOutBody<T>, Get>(data, 'get');
   }
 
-  public delete<T = any>(data: IWithOutBody<T>): IHttpResource<Delete, T> {
-    return this.createResource<T, IWithOutBody<T>, Delete>(data, 'delete');
+  public delete<T = any>(data: IWithOutBodyDelete<T>): IHttpResource<Delete, T> {
+    return this.createResource<T, IWithOutBodyDelete<T>, Delete>(data, 'delete');
   }
 
   public post<T = any>(data: IWithBody<T>): IHttpResource<Post, T> {
