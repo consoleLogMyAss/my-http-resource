@@ -36,7 +36,7 @@ import { IHttpResource, myHttpResource, Get, Post, Put, Patch, Delete } from 'my
 ### 1. GET request
 
 ```ts
-public getRequestData = myHttpResource().get<TData>({
+public getRequestData: IHttpResource<Get, TData> = myHttpResource().get<TData>({
   url:'your_url/{{myId}}',
   pipe: pipe(delay(1000)),
   afterSuccess: (data: TData) => this.afterSuccess(data),
@@ -50,12 +50,20 @@ public getRequestData = myHttpResource().get<TData>({
   initialValue: [],
   mergeValues: false,
 });
+
+public myMethod(): void {
+  this.getRequestData.fetch({
+    queryParams: { currency: 'EUR' },
+    urlParams: { myId: 3 },
+    mergeValues: true,
+  })
+}
 ```
 
 ### 2. POST request
 
 ```ts
-public postRequestData = myHttpResource().post<TData>({
+public postRequestData: IHttpResource<Post, TData> = myHttpResource().post<TData>({
   url:'your_url/{{myId}}',
   manual: true,
   body: { name: 'Elizabeth'},  
@@ -69,13 +77,21 @@ public postRequestData = myHttpResource().post<TData>({
   manual: true,
   initialValue: [],
   mergeValues: false,
-})
+});
+
+public myMethod(): void {
+  this.postRequestData.fetch({
+    body: { name: 'Arnold'},
+    urlParams: { myId: 3 },
+    mergeValues: true,
+  })
+}
 ```
 
 ### 3. PUT request
 
 ```ts
-public putRequestData = myHttpResource().put<TData>({
+public putRequestData: IHttpResource<Put, TData> = myHttpResource().put<TData>({
   url:'your_url/{{myId}}',
   manual: true,
   body: { name: 'Elizabeth'},  
@@ -89,12 +105,20 @@ public putRequestData = myHttpResource().put<TData>({
   manual: true,
   initialValue: [],
   mergeValues: false,
-})
+});
+
+public myMethod(): void {
+  this.putRequestData.fetch({
+    body: { name: 'Arnold'},
+    urlParams: { myId: 3 },
+    mergeValues: true,
+  })
+}
 ```
 ### 4. PATCH request
 
 ```ts
-public patchRequestData = myHttpResource().patch<TData>({
+public patchRequestData: IHttpResource<Patch, TData> = myHttpResource().patch<TData>({
   url:'your_url/{{myId}}',
   manual: true,
   body: { name: 'Elizabeth'},
@@ -108,13 +132,21 @@ public patchRequestData = myHttpResource().patch<TData>({
   manual: true,
   initialValue: [],
   mergeValues: false,
-})
+});
+
+public myMethod(): void {
+  this.putRequestData.fetch({
+    body: { name: 'Arnold'},
+    urlParams: { myId: 3 },
+    mergeValues: true,
+  })
+}
 ```
 
 ### 5. DELETE request
 
 ```ts
-public deleteRequestData = myHttpResource().delete<TData>({
+public deleteRequestData: IHttpResource<Delete, TData> = myHttpResource().delete<TData>({
   url:'your_url/{{myId}}',
   pipe: pipe(delay(1000)),
   afterSuccess: (data: TData) => this.afterSuccess(data),
@@ -127,8 +159,17 @@ public deleteRequestData = myHttpResource().delete<TData>({
   manual: true,
   initialValue: [],
   mergeValues: false,
-  body: { name: 'Arnold' }
+  body: { name: 'Elizabeth' }
 });
+
+public myMethod(): void {
+  this.deleteRequestData.fetch({
+    body: { name: 'Arnold'},
+    queryParams: { currency: 'EUR' },
+    urlParams: { myId: 3 },
+    mergeValues: true,
+  })
+}
 ```
 
 ---
@@ -150,7 +191,7 @@ export interface IPost {
 
 @Injectable()
 export class AppService {
-  // GET: /posts/{{postId}}?limit=...
+  // GET: /posts/{{postId}}?limit=... - All parameters except url are optional.
   public posts = myHttpResource().get<IPost[]>({
     url: '/api/posts/{{postId}}',
     urlParams: { postId: 1 },
@@ -162,7 +203,7 @@ export class AppService {
     mergeValues: true, // If you want the received data to be merged with the previous ones instead of overwriting them.
   });
 
-  // POST: /posts
+  // POST: /posts - All parameters except url are optional.
   public sendPost = myHttpResource().post<IPost>({
     url: '/api/posts',
     body: { name: 'John', email: 'john@mail.com', body: 'Hello' },
@@ -171,21 +212,21 @@ export class AppService {
     mergeValues: true
   });
 
-  // PUT: /posts/{{id}}
+  // PUT: /posts/{{id}} - All parameters except url are optional.
   public updatePost = myHttpResource().put<IPost>({
     url: '/api/posts/{{id}}',
     urlParams: { id: 1 },
     manual: true,
   });
 
-  // PATCH: /posts/{{id}}
+  // PATCH: /posts/{{id}} - All parameters except url are optional.
   public patchPost = myHttpResource().patch<IPost>({
     url: '/api/posts/{{id}}',
     urlParams: { id: 1 },
     manual: true,
   });
 
-  // DELETE: /posts/{{id}}
+  // DELETE: /posts/{{id}} - All parameters except url are optional.
   public deletePost = myHttpResource().delete<void>({
     url: '/api/posts/{{id}}',
     urlParams: { id: 1 },

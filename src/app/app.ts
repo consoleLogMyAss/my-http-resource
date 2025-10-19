@@ -33,7 +33,9 @@ export class App {
   }
 
   protected sendPostHandler(): void {
-    this.appService.sendPost.fetch();
+    this.appService.sendPost.fetch({
+
+    });
   }
 
   protected setLocalPost(): void {
@@ -55,7 +57,7 @@ export class App {
   }
 
   protected deletePostHandler() {
-    this.appService.deletePost.fetch();
+    this.appService.deletePost.fetch({});
   }
 
   protected requestObservable(): void {
