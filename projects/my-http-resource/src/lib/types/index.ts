@@ -26,6 +26,7 @@ export type Get = {
 
 export type Delete = {
   queryParams?: TQueryParams,
+  body?: object;
 } & TFetchData;
 
 export type Post = {

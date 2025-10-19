@@ -50,7 +50,7 @@ export class App {
 
   protected patchPostHandler(): void {
     this.appService.patchPost.fetch({
-      body: testPost
+      body: testPost,
     })
   }
 

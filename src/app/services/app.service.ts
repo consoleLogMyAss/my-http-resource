@@ -74,7 +74,7 @@ export class AppService {
     this.posts.value.update((v: IPost[]) => [...v, data])
   }
 
-  public updatePost: IHttpResource<Put> = myHttpResource().put({
+  public updatePost: IHttpResource<Put, IPost> = myHttpResource().put({
     url:'https://jsonplaceholder.typicode.com/posts/{{postId}}',
     urlParams: { postId: 1 },
     manual: true,
@@ -100,7 +100,6 @@ export class AppService {
     url:'https://jsonplaceholder.typicode.com/posts/{{postId}}',
     urlParams: { postId: 1 },
     manual: true,
-    body: { name: 'Arnold' },
     afterSuccess: (data: IPost) => this.afterDeletePostHandler(data),
   })
 

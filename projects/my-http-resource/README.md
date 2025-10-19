@@ -127,6 +127,7 @@ public deleteRequestData = myHttpResource().delete<TData>({
   manual: true,
   initialValue: [],
   mergeValues: false,
+  body: { name: 'Arnold' }
 });
 ```
 
@@ -290,7 +291,7 @@ data.fetch({
   urlParams: { postId: 1 }
 });
 ````
-### 3. Request Body for POST/PUT/PATCH
+### 3. Request Body for POST/PUT/PATCH/DELETE
 
 Define it in the config or override when calling:
 
@@ -414,7 +415,7 @@ The generic T in get<T>() / post<T>() / ... is the type of the expected response
 - #### Forgot `urlParams` for the template → “Missing value for URL parameter…”. Solution: pass all the keys used in {{...}}.
 - #### `Incorrect initialValue` → the template expects [], but null came instead. Solution: set an appropriate default type.
 - #### Expecting `request$()` to update `value()` → it won’t. It’s a “pure” stream. Use `fetch()` or update value manually in subscribe.
-- #### Confusing `queryParams` and `body` → for GET/DELETE use `queryParams`, for POST/PUT/PATCH use `body`.
+- #### Confusing `queryParams` and `body` → for GET/DELETE use `queryParams`, for POST/PUT/PATCH/DELETE use `body`.
 - #### I set `mergeValues`, but the data isn’t merging? Verify that the data type is an array or an object, and that the server response type matches the type of the current value.
 --- 
 
