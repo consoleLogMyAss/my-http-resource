@@ -49,6 +49,9 @@ public getRequestData: IHttpResource<Get, TData> = myHttpResource().get<TData>({
   manual: true,
   initialValue: [],
   mergeValues: false,
+  opttions: {
+    // httpOptions for get request
+  }
 });
 
 public myMethod(): void {
@@ -56,6 +59,9 @@ public myMethod(): void {
     queryParams: { currency: 'EUR' },
     urlParams: { myId: 3 },
     mergeValues: true,
+    opttions: {
+      // httpOptions for get request
+    }
   })
 }
 ```
@@ -77,6 +83,9 @@ public postRequestData: IHttpResource<Post, TData> = myHttpResource().post<TData
   manual: true,
   initialValue: [],
   mergeValues: false,
+  opttions: {
+    // httpOptions for post request
+  }
 });
 
 public myMethod(): void {
@@ -84,6 +93,9 @@ public myMethod(): void {
     body: { name: 'Arnold'},
     urlParams: { myId: 3 },
     mergeValues: true,
+    opttions: {
+      // httpOptions for post request
+    }
   })
 }
 ```
@@ -105,6 +117,9 @@ public putRequestData: IHttpResource<Put, TData> = myHttpResource().put<TData>({
   manual: true,
   initialValue: [],
   mergeValues: false,
+  opttions: {
+    // httpOptions for put request
+  }
 });
 
 public myMethod(): void {
@@ -112,6 +127,9 @@ public myMethod(): void {
     body: { name: 'Arnold'},
     urlParams: { myId: 3 },
     mergeValues: true,
+    opttions: {
+      // httpOptions for put request
+    }
   })
 }
 ```
@@ -132,6 +150,9 @@ public patchRequestData: IHttpResource<Patch, TData> = myHttpResource().patch<TD
   manual: true,
   initialValue: [],
   mergeValues: false,
+  opttions: {
+    // httpOptions for patch request
+  }
 });
 
 public myMethod(): void {
@@ -139,6 +160,9 @@ public myMethod(): void {
     body: { name: 'Arnold'},
     urlParams: { myId: 3 },
     mergeValues: true,
+    opttions: {
+      // httpOptions for patch request
+    }
   })
 }
 ```
@@ -159,15 +183,21 @@ public deleteRequestData: IHttpResource<Delete, TData> = myHttpResource().delete
   manual: true,
   initialValue: [],
   mergeValues: false,
-  body: { name: 'Elizabeth' }
+  body: { name: 'Elizabeth' },
+  opttions: {
+    // httpOptions for delete request
+  }
 });
 
 public myMethod(): void {
   this.deleteRequestData.fetch({
-    body: { name: 'Arnold'},
+    body: { name: 'Arnold'}, // if 
     queryParams: { currency: 'EUR' },
     urlParams: { myId: 3 },
     mergeValues: true,
+    opttions: {
+      // httpOptions for get request
+    }
   })
 }
 ```

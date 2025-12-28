@@ -3,7 +3,15 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 
-import {IWithOutBody, IHttpResource, IWithBody, IRequest, IWithOutBodyDelete} from '../interfaces';
+import {
+  IDeleteRequest,
+  IGetRequest,
+  IHttpResource,
+  IPatchRequest,
+  IPostRequest,
+  IPutRequest,
+  IRequest
+} from '../interfaces';
 import { ReactiveHttpModel} from '../model/reactive.http.model';
 import {
   Delete,
@@ -84,49 +92,49 @@ export class MyHttpService {
   private createConfigForWithOutBody(paramsModel: Partial<TOptionsData>): any {
     const config: Partial<TOptionsData> = {
       params: paramsModel.params,
-      headers: paramsModel.headers
+      headers: paramsModel.headers,
     }
 
     if (Object.keys(paramsModel.body).length > 0) {
       config.body = paramsModel.body;
     }
 
-    return config;
+    return {...config, ...paramsModel.options };
   }
 
   private getHttp<T>(method: TMethod, data: IRequest<T>): Observable<T> {
     const url: string = this.createUrl(data.url, data.urlParams);
     const paramsModel: Partial<TOptionsData> = new ParamsModel(data);
-    const { body, headers }: Partial<TOptionsData> = paramsModel;
+    const { body, headers, options }: Partial<TOptionsData> = paramsModel;
     const isWithoutBody: boolean = ['get', 'delete'].includes(method);
 
     const request$: Observable<T> = isWithoutBody
       ? (this.http[method] as TMethodWithoutBody<T>)(url, this.createConfigForWithOutBody(paramsModel))
-      : (this.http[method] as TMethodFnWithBody<T>)(url, body, { headers });
+      : (this.http[method] as TMethodFnWithBody<T>)(url, body, { headers, ...options });
 
     const baseRequest: Observable<T> = request$.pipe(takeUntilDestroyed(this.destroyRef));
 
     return data.pipe ? baseRequest.pipe(data.pipe) : baseRequest;
   }
 
-  public get<T = any>(data: IWithOutBody<T>): IHttpResource<Get, T> {
-    return this.createResource<T, IWithOutBody<T>, Get>(data, 'get');
+  public get<T = any>(data: IGetRequest<T>): IHttpResource<Get, T> {
+    return this.createResource<T, IGetRequest<T>, Get>(data, 'get');
   }
 
-  public delete<T = any>(data: IWithOutBodyDelete<T>): IHttpResource<Delete, T> {
-    return this.createResource<T, IWithOutBodyDelete<T>, Delete>(data, 'delete');
+  public post<T = any>(data: IPostRequest<T>): IHttpResource<Post, T> {
+    return this.createResource<T, IPostRequest<T>, Post>(data, 'post');
   }
 
-  public post<T = any>(data: IWithBody<T>): IHttpResource<Post, T> {
-    return this.createResource<T, IWithBody<T>, Post>(data, 'post');
+  public patch<T = any>(data: IPatchRequest<T>): IHttpResource<Patch, T> {
+    return this.createResource<T, IPatchRequest<T>, Patch>(data, 'patch');
   }
 
-  public patch<T = any>(data: IWithBody<T>): IHttpResource<Patch, T> {
-    return this.createResource<T, IWithBody<T>, Patch>(data, 'patch');
+  public put<T = any>(data: IPutRequest<T>): IHttpResource<Put, T> {
+    return this.createResource<T, IPutRequest<T>, Put>(data, 'put');
   }
 
-  public put<T = any>(data: IWithBody<T>): IHttpResource<Put, T> {
-    return this.createResource<T, IWithBody<T>, Put>(data, 'put');
+  public delete<T = any>(data: IDeleteRequest<T>): IHttpResource<Delete, T> {
+    return this.createResource<T, IDeleteRequest<T>, Delete>(data, 'delete');
   }
 
   private createResource<T, Req extends IRequest<T>, Method extends TypeMethod>(

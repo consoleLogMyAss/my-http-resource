@@ -26,6 +26,11 @@ export class App {
       mergeValues: this.postId % 2 === 0,
       urlParams: {
         postId: this.postId,
+      },
+      options: {
+        headers: {
+          'lololol': 'SOCCER'
+        }
       }
     });
 
@@ -33,9 +38,7 @@ export class App {
   }
 
   protected sendPostHandler(): void {
-    this.appService.sendPost.fetch({
-
-    });
+    this.appService.sendPost.fetch();
   }
 
   protected setLocalPost(): void {

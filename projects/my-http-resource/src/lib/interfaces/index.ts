@@ -1,6 +1,6 @@
 import { Signal, WritableSignal } from '@angular/core';
 import { Observable, UnaryFunction } from 'rxjs';
-import { TQueryParams, TUrlParams } from '../types';
+import { HttpOptions, TMethod, TQueryParams, TUrlParams } from '../types';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export interface IHttpResource<Method, T = any> {
@@ -11,7 +11,7 @@ export interface IHttpResource<Method, T = any> {
   request$: (fetData?: Method) => Observable<any>,
 }
 
-export interface IBaseRequestData<T> {
+export interface IBaseRequestData<T, M extends TMethod> {
   url: string;
   afterSuccess?: (data: T) => void;
   afterError?: (error: HttpErrorResponse) => void;
@@ -21,21 +21,33 @@ export interface IBaseRequestData<T> {
   mergeValues?: boolean;
   pipe?: UnaryFunction<Observable<T>, Observable<T>>;
   urlParams?: TUrlParams;
+  options?: HttpOptions<M>;
 }
 
-export interface IWithOutBody<T> extends IBaseRequestData<T> {
+export interface IGetRequest<T> extends IBaseRequestData<T, 'get'> {
   queryParams?: TQueryParams;
 }
 
-export interface IWithOutBodyDelete<T> extends IWithOutBody<T> {
-  queryParams?: TQueryParams;
+export interface IPostRequest<T> extends IBaseRequestData<T, 'post'> {
   body?: object;
 }
 
-export interface IWithBody<T> extends IBaseRequestData<T> {
+export interface IPatchRequest<T> extends IBaseRequestData<T, 'patch'> {
   body?: object;
+}
+
+export interface IPutRequest<T> extends IBaseRequestData<T, 'put'> {
+  body?: object;
+}
+
+export interface IDeleteRequest<T> extends IBaseRequestData<T, 'delete'> {
+  body?: object;
+  queryParams?: TQueryParams;
 }
 
 export type IRequest<T> =
-  | IWithOutBody<T>
-  | IWithBody<T>
+  | IGetRequest<T>
+  | IPostRequest<T>
+  | IPatchRequest<T>
+  | IPutRequest<T>
+  | IDeleteRequest<T>

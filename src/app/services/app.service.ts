@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IHttpResource, myHttpResource, Get, Post, Put, Patch, Delete} from 'my-http-resource';
 import {delay, map, pipe} from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
+import {HttpErrorResponse, HttpParams} from '@angular/common/http';
 import { IPost } from '../app';
 
 export const testPost = {
@@ -31,7 +31,7 @@ export class AppService {
    */
   public statisticDownloads = myHttpResource().get<IStatistic>({
     url: 'https://api.npmjs.org/downloads/point/last-day/my-http-resource',
-    initialValue: {}
+    initialValue: {},
   })
 
   public posts = myHttpResource().get<IPost[]>({
@@ -48,10 +48,15 @@ export class AppService {
     headers: {
       testHeader: '12345'
     },
-    queryParams: { currency: 'USD' },
+    queryParams: { currency: 'USD2' },
     manual: true,
     mergeValues: true,
     initialValue: [],
+    options: {
+      headers: {
+        testHeader: '789'
+      }
+    }
   });
 
   private afterSuccess(data: IPost[]) {
@@ -68,6 +73,11 @@ export class AppService {
     pipe: pipe(delay(1000)),
     body: testPost,
     afterSuccess: (data: IPost) => this.afterPostSuccess(data),
+    options: {
+      headers: {
+        arbuzino: 'ARBUZINO'
+      }
+    }
   })
 
   private afterPostSuccess(data: IPost) {
